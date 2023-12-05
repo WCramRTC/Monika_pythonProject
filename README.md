@@ -30,56 +30,6 @@ ChatGPT Breakdown
 ## Issue 1: Dialog Box Closing the Entire Application
 To address the issue where pressing "OK" in the dialog box closes the entire application, ensure that the event handler for the "OK" button only contains a method to dismiss the dialog, like `dialog.dismiss()`, and does not include any command that might close the application.
 
-## Issue 2: Adding a Scroll Functionality
-To add scrolling functionality to your application:
-
-1. Use a `ScrollView` widget. 
-2. Ensure that the layout within the `ScrollView` has `size_hint_y` set to `None` and its height is set to accommodate all its children.
-3. Adjust `size_hint_min` and `size_hint_max` properties of the children widgets.
-
-### Example Code for ScrollView and Popup Dialog
-
-```python
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.button import Button
-from kivy.uix.popup import Popup
-from kivy.uix.label import Label
-
-class MyApp(App):
-    def build(self):
-        # Main layout
-        layout = BoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
-        layout.bind(minimum_height=layout.setter('height'))
-
-        # Add widgets to the layout
-        for i in range(50):  # Just an example to create a long list
-            btn = Button(text=f'Button {i}', size_hint_y=None, height=40)
-            layout.add_widget(btn)
-
-        # Create a ScrollView
-        scroll_view = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
-        scroll_view.add_widget(layout)
-
-        # Create a popup dialog
-        popup_content = BoxLayout(orientation='vertical')
-        popup_content.add_widget(Label(text='Your message here'))
-        close_button = Button(text='Close', size_hint_y=None, height=40)
-        popup_content.add_widget(close_button)
-
-        self.popup = Popup(title='Dialog Title', content=popup_content, size_hint=(None, None), size=(400, 400))
-        close_button.bind(on_press=self.dismiss_popup)
-
-        return scroll_view
-
-    def dismiss_popup(self, instance):
-        self.popup.dismiss()
-
-if __name__ == '__main__':
-    MyApp().run()
-```
-
 ## Implementing Dialog Dismissal in Kivy MD
 
 ### Using a lambda function:
