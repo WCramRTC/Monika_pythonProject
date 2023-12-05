@@ -1,0 +1,4 @@
+: Mood ratings - {}
+: Mood ratings - {'Wednesday': 2}
+: Mood ratings - {}
+: Mood ratings - {'Tuesday': 2}

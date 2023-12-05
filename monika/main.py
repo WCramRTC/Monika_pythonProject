@@ -1,21 +1,28 @@
+from kivy.uix.scrollview import ScrollView
 from kivymd.app import MDApp
-from kivymd.uix.screen import Screen
-from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.dialog import MDDialog
 from kivy.uix.boxlayout import BoxLayout
 from datetime import datetime
+from kivy.core.window import Window
 
 class MentalApp(MDApp):
 
-    #main
     def build(self):
-        self.layout = BoxLayout(orientation='vertical', spacing=10, padding=20)
+        # # Create a root layout (Box Layout) for the entire screen
+        # root_layout = BoxLayout(orientation='vertical', spacing=10, padding=20)
+
+        # Create a root layout (Box Layout) for the entire screen
+        root_layout = BoxLayout(orientation='vertical', spacing=10, padding=20, size_hint_y=None)
+
+        # Set the minimum height of the layout
+        root_layout.bind(minimum_height=root_layout.setter('height'))
 
         # Title
         title_label = MDLabel(text="Weekly Wellness Check-in", font_style='H4')
-        self.layout.add_widget(title_label)
+        root_layout.add_widget(title_label)
 
         # Name input in a container
         name_container = BoxLayout(orientation='horizontal')
@@ -23,8 +30,7 @@ class MentalApp(MDApp):
         self.name_input = MDTextField(hint_text="Your Name")
         name_container.add_widget(name_label)
         name_container.add_widget(self.name_input)
-
-        self.layout.add_widget(name_container)
+        root_layout.add_widget(name_container)
 
         # Days of the week
         self.day_inputs = {}
@@ -33,19 +39,27 @@ class MentalApp(MDApp):
 
         # Create UI components for each day
         for day in days:
-            label = MDLabel(text=day)
-            text_input = MDTextField(hint_text=f"How is your mood on {day}? (1 to 5)")
-            self.layout.add_widget(label)
-            self.layout.add_widget(text_input)
+            label = MDLabel(text=day, size_hint_y=None, height=30)
+            text_input = MDTextField(hint_text=f"How is your mood on {day}? (1 to 5)", size_hint_y=None, height=30)
+            root_layout.add_widget(label)
+            root_layout.add_widget(text_input)
 
-            #save the number input from user to the array
+            # Save the number input from the user to the array
             self.day_inputs[day] = text_input
 
         # Create a button to trigger the check-in
         check_in_button = MDRaisedButton(text="Check-in", on_release=self.show_summary)
-        self.layout.add_widget(check_in_button)
+        root_layout.add_widget(check_in_button)
 
-        return self.layout
+        # # Create a ScrollView and add the entire UI layout to it
+        # scroll_view = ScrollView()
+        # scroll_view.add_widget(root_layout)
+
+        # Create a ScrollView and add the entire UI layout to it
+        scroll_view = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
+        scroll_view.add_widget(root_layout)
+
+        return scroll_view
 
     def show_summary(self, instance):
         name = self.name_input.text
@@ -107,12 +121,8 @@ class MentalApp(MDApp):
         dialog = MDDialog(
             title="Check-in Summary",
             text=summary_text,
-            buttons=
-            [MDRaisedButton
-                (
-                    text="OK",
-                    on_release=self.dialog_dismiss,
-                ),
+            buttons=[
+                MDRaisedButton(text="OK", on_release=lambda *args: self.dialog_dismiss(dialog))
             ],
         )
 
